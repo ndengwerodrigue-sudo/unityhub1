@@ -13,6 +13,7 @@
     "migrate:comments": "node scripts/run-comment-engagement-migration.js",
     "migrate:opportunities-v2": "node -e \"require('dotenv').config(); require('./scripts/run-opportunities-v2-migration')().then(()=>process.exit(0)).catch(e=>{console.error(e);process.exit(1)})\"",
     "migrate:auth": "node -e \"require('dotenv').config(); const { runAuthMigration } = require('./scripts/run-auth-migration'); runAuthMigration().then(()=>process.exit(0)).catch(e=>{console.error(e);process.exit(1)})\"",
+    "migrate:bootstrap": "node scripts/bootstrap-schema.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

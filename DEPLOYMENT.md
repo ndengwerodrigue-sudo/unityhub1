@@ -205,7 +205,8 @@ https://your-api.up.railway.app/api/auth/google/callback
 
 | Priority | Issue | What to do |
 |----------|-------|------------|
-| **CRITICAL** | `backend/.env` was in git history | Rotate `JWT_SECRET`, `BREVO_API_KEY`, `GOOGLE_CLIENT_SECRET`, DB password. Never commit `.env` again. |
+| **CRITICAL** | Fresh Railway/Neon DB has no tables | Fixed: server runs `bootstrap-schema.js` on startup. Redeploy backend after pulling latest code. |
+| **CRITICAL** | `backend/.env` was in git history | Rotate `JWT_SECRET`, `BREVO_API_KEY`, `GOOGLE_CLIENT_SECRET`, DB password. |
 | **CRITICAL** | `JWT_SECRET=change_me_in_production` in local `.env` | Generate strong secrets before production deploy |
 | **HIGH** | Brevo IP restriction | Authorize deploy server IP in Brevo or emails will fail |
 | **HIGH** | `node_modules` was tracked | Run `git add .gitignore` and commit the untrack changes (see below) |

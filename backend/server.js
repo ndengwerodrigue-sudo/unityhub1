@@ -293,6 +293,8 @@ const runMigrations = async () => {
 query('SELECT 1')
   .then(async () => {
     console.log('PostgreSQL connected successfully');
+    const { bootstrapSchema } = require('./scripts/bootstrap-schema');
+    await bootstrapSchema();
     await runMigrations();
   })
   .catch(err => console.error('PostgreSQL connection error:', err));
