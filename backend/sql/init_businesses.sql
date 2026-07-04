@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS businesses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(100) NOT NULL,
+  description TEXT NOT NULL,
+  category VARCHAR(50) NOT NULL,
+  location VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50) NOT NULL,
+  website VARCHAR(255),
+  address VARCHAR(200),
+  logo TEXT DEFAULT '',
+  images TEXT[] DEFAULT '{}',
+  social_media JSONB DEFAULT '{}',
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  verified BOOLEAN NOT NULL DEFAULT FALSE,
+  created_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
