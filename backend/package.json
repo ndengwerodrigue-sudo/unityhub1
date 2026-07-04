@@ -18,10 +18,13 @@
   "keywords": [
     "node",
     "express",
-    "mongodb",
+    "postgresql",
     "jwt",
     "cameroon"
   ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "author": "Unity Hub Team",
   "license": "MIT",
   "dependencies": {
