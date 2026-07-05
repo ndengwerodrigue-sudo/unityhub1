@@ -6,6 +6,8 @@ const path = require('path');
 require('dotenv').config();
 const { query } = require('./db');
 const { createGlobalLimiter } = require('./utils/rateLimiters');
+const { createCorsOptions, getAllowedOrigins } = require('./utils/corsConfig');
+const { getGoogleCallbackUrl, getGithubCallbackUrl } = require('./utils/oauthUrls');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -30,31 +32,12 @@ app.use((req, res, next) => {
 // Security middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
-app.use(createGlobalLimiter());
-
-// CORS configuration
-const allowedOrigins = [
-  ...(process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:3000,http://localhost:3001')
-    .split(',')
-    .map(s => s.trim())
-    .filter(Boolean),
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:3001'
-];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-};
-
+// CORS must run before rate limiting so preflight always gets headers
+const corsOptions = createCorsOptions();
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
+
+app.use(createGlobalLimiter());
 app.use(cookieParser());
 
 // Body parsing middleware
@@ -344,6 +327,12 @@ app.use('*', (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+  console.log('CORS allowed origins:', getAllowedOrigins().join(', ') || '(none — set FRONTEND_URL on Railway)');
+  console.log('Google OAuth callback:', getGoogleCallbackUrl());
+  console.log('GitHub OAuth callback:', getGithubCallbackUrl());
+  if (process.env.NODE_ENV === 'production' && !process.env.FRONTEND_URL && !process.env.FRONTEND_URLS) {
+    console.warn('[CORS] Set FRONTEND_URL=https://unityhub1.vercel.app on Railway');
+  }
   try {
     const { verifyEmailConfig, isConfigured } = require('./services/emailService');
     if (isConfigured()) {
